@@ -5,6 +5,16 @@ import { useAuth } from '../AuthContext';
 import styled from 'styled-components';
 import { useMediaQuery } from 'react-responsive';
 
+// Image URLs from Firebase Storage
+const IMAGE_URLS = {
+    offline: 'https://firebasestorage.googleapis.com/v0/b/secret-cipher-453016-s5.appspot.com/o/offline.jpeg?alt=media',
+    secureStorage: 'https://firebasestorage.googleapis.com/v0/b/secret-cipher-453016-s5.appspot.com/o/secure-storage.jpeg?alt=media',
+    easySharing: 'https://firebasestorage.googleapis.com/v0/b/secret-cipher-453016-s5.appspot.com/o/easy-sharing.jpeg?alt=media',
+    ourMission: 'https://firebasestorage.googleapis.com/v0/b/secret-cipher-453016-s5.appspot.com/o/our-mission.jpeg?alt=media',
+    privacyFirst: 'https://firebasestorage.googleapis.com/v0/b/secret-cipher-453016-s5.appspot.com/o/privacy-first.png?alt=media',
+    innovation: 'https://firebasestorage.googleapis.com/v0/b/secret-cipher-453016-s5.appspot.com/o/innovation.jpeg?alt=media'
+};
+
 const PageContainer = styled.div`
     min-height: 100vh;
     overflow-y: auto;
@@ -111,12 +121,16 @@ const FeatureCard = styled.div`
     }
 
     img {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 1rem;
-        border-radius: 50%;
-        padding: 1rem;
-        background: ${props => props.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+        width: 100%;
+        height: 200px;
+        margin-bottom: 1.5rem;
+        border-radius: 12px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+        transform: scale(1.05);
     }
 `;
 
@@ -200,17 +214,17 @@ const Home = () => {
 
                 <FeatureGrid>
                     <FeatureCard darkMode={darkMode}>
-                        <img src="/images/offline-icon.png" alt="Offline Access" />
+                        <img src={IMAGE_URLS.offline} alt="Offline Access" />
                         <h3>Offline Access</h3>
                         <p>Access your health records anytime, even without internet connectivity. Your data stays with you.</p>
                     </FeatureCard>
                     <FeatureCard darkMode={darkMode}>
-                        <img src="/images/security-icon.png" alt="Secure Storage" />
+                        <img src={IMAGE_URLS.secureStorage} alt="Secure Storage" />
                         <h3>Secure Storage</h3>
                         <p>Your data is encrypted and stored securely on your device, ensuring complete privacy.</p>
                     </FeatureCard>
                     <FeatureCard darkMode={darkMode}>
-                        <img src="/images/share-icon.png" alt="Easy Sharing" />
+                        <img src={IMAGE_URLS.easySharing} alt="Easy Sharing" />
                         <h3>Easy Sharing</h3>
                         <p>Share your records with healthcare providers using QR codes when needed.</p>
                     </FeatureCard>
@@ -222,7 +236,7 @@ const Home = () => {
                     </Title>
                     <AboutGrid>
                         <AboutCard darkMode={darkMode}>
-                            <img src="/images/mission.jpg" alt="Our Mission" />
+                            <img src={IMAGE_URLS.ourMission} alt="Our Mission" />
                             <h3>Our Mission</h3>
                             <p>
                                 We're committed to revolutionizing healthcare record management by providing a secure, 
@@ -230,7 +244,7 @@ const Home = () => {
                             </p>
                         </AboutCard>
                         <AboutCard darkMode={darkMode}>
-                            <img src="/images/privacy.jpg" alt="Privacy First" />
+                            <img src={IMAGE_URLS.privacyFirst} alt="Privacy First" />
                             <h3>Privacy First</h3>
                             <p>
                                 Your privacy is our top priority. We use state-of-the-art encryption and offline-first 
@@ -238,7 +252,7 @@ const Home = () => {
                             </p>
                         </AboutCard>
                         <AboutCard darkMode={darkMode}>
-                            <img src="/images/innovation.jpg" alt="Innovation" />
+                            <img src={IMAGE_URLS.innovation} alt="Innovation" />
                             <h3>Innovation</h3>
                             <p>
                                 We leverage cutting-edge technology to provide seamless offline access, easy sharing 

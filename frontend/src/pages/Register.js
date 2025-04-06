@@ -6,14 +6,11 @@ import { useTheme } from "../ThemeContext";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-  containerStyle,
-  titleStyle,
-  descriptionStyle,
   labelStyle,
   inputStyle,
   buttonStyle,
-  formPageWrapper,
 } from "../style";
+import { PageContainer, ContentContainer, Card } from '../styles/SharedStyles';
 
 
 
@@ -267,57 +264,51 @@ const Register = () => {
   };
 
   return (
-    <div style={formPageWrapper(darkMode)}>
-      <div style={{
-        ...containerStyle(darkMode),
-        maxWidth: '600px',
-        margin: '0 auto',
-        padding: '2rem'
-      }}>
-        <div style={titleStyle(darkMode)}>Register Now</div>
-        <div style={descriptionStyle(darkMode)}>
-          Create your account to securely store and manage your health records
-          anytime, anywhere, even offline.
-        </div>
-
-        <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-          <button
-            onClick={toggleRegistrationMethod}
-            style={{
-              ...buttonStyle(darkMode),
-              backgroundColor: 'transparent',
-              border: `1px solid ${darkMode ? '#fff' : '#333'}`,
-              padding: '0.5rem 1rem',
-              marginBottom: '1rem'
-            }}
-          >
-            Switch to {registrationMethod === 'email' ? 'Phone' : 'Email'} Registration
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={labelStyle(darkMode)}>Name</label>
-            <input
-              name="name"
-              placeholder="Enter your name"
-              onChange={handleChange}
-              value={formData.name}
+    <PageContainer darkMode={darkMode}>
+      <ContentContainer>
+        <Card darkMode={darkMode}>
+          <h2 style={{ color: darkMode ? '#fff' : '#333', marginBottom: '1.5rem' }}>Register Now</h2>
+          <p style={{ color: darkMode ? '#cccccc' : '#666666', marginBottom: '2rem' }}>
+            Create your account to securely store and manage your health records
+            anytime, anywhere, even offline.
+          </p>
+          <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+            <button
+              onClick={toggleRegistrationMethod}
               style={{
-                ...inputStyle(darkMode),
-                borderColor: validationErrors.name ? '#dc3545' : undefined
+                ...buttonStyle(darkMode),
+                backgroundColor: 'transparent',
+                border: `1px solid ${darkMode ? '#fff' : '#333'}`,
+                padding: '0.5rem 1rem',
+                marginBottom: '1rem'
               }}
-              disabled={loading}
-              required
-            />
-            {validationErrors.name && (
-              <div style={{ color: '#dc3545', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                {validationErrors.name}
-              </div>
-            )}
+            >
+              Switch to {registrationMethod === 'email' ? 'Phone' : 'Email'} Registration
+            </button>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={labelStyle(darkMode)}>Name</label>
+              <input
+                name="name"
+                placeholder="Enter your name"
+                onChange={handleChange}
+                value={formData.name}
+                style={{
+                  ...inputStyle(darkMode),
+                  borderColor: validationErrors.name ? '#dc3545' : undefined
+                }}
+                disabled={loading}
+                required
+              />
+              {validationErrors.name && (
+                <div style={{ color: '#dc3545', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                  {validationErrors.name}
+                </div>
+              )}
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
             <label style={labelStyle(darkMode)}>Age</label>
             <input
               name="age"
@@ -385,7 +376,7 @@ const Register = () => {
             </div>
           )}
 
-          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
             <label style={labelStyle(darkMode)}>Password</label>
             <input
               name="password"
@@ -407,7 +398,7 @@ const Register = () => {
             )}
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
             <label style={labelStyle(darkMode)}>Confirm Password</label>
             <input
               name="confirmPassword"
@@ -430,19 +421,19 @@ const Register = () => {
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
-            <label style={labelStyle(darkMode)}>Location</label>
-            <input
-              name="location"
-              placeholder="Enter your location"
-              onChange={handleChange}
-              value={formData.location}
-              style={{
-                ...inputStyle(darkMode),
-                borderColor: validationErrors.location ? '#dc3545' : undefined
-              }}
-              disabled={loading}
-              required
-            />
+              <label style={labelStyle(darkMode)}>Location</label>
+              <input
+                name="location"
+                placeholder="Enter your location"
+                onChange={handleChange}
+                value={formData.location}
+                style={{
+                  ...inputStyle(darkMode),
+                  borderColor: validationErrors.location ? '#dc3545' : undefined
+                }}
+                disabled={loading}
+                required
+              />
             {validationErrors.location && (
               <div style={{ color: '#dc3545', fontSize: '0.875rem', marginTop: '0.25rem' }}>
                 {validationErrors.location}
@@ -503,29 +494,29 @@ const Register = () => {
               {error}
             </p>
           )}
-        </form>
-
-        <div style={{ 
-          marginTop: '1.5rem',
-          textAlign: 'center',
-          color: darkMode ? '#aaa' : '#666'
-        }}>
-          Already have an account?{" "}
-          <Link 
-            to="/login" 
-            style={{ 
-              color: darkMode ? '#66b3ff' : '#0077cc',
-              textDecoration: 'none',
-              ':hover': {
-                textDecoration: 'underline'
-              }
-            }}
-          >
-            Login here
-          </Link>
-        </div>
-      </div>
-    </div>
+          </form>
+          <div style={{ 
+            marginTop: '1.5rem',
+            textAlign: 'center',
+            color: darkMode ? '#aaa' : '#666'
+          }}>
+            Already have an account?{" "}
+            <Link 
+              to="/login" 
+              style={{ 
+                color: darkMode ? '#66b3ff' : '#0077cc',
+                textDecoration: 'none',
+                ':hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              Login here
+            </Link>
+          </div>
+        </Card>
+      </ContentContainer>
+    </PageContainer>
   );
 };
 

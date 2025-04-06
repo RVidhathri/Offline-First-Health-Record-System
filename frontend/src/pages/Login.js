@@ -6,12 +6,11 @@ import { toast } from "react-toastify";
 import { styles } from "../style";
 import { useTheme } from "../ThemeContext";
 import {
-  loginContainerStyle,
   inputStyle,
   buttonStyle,
   labelStyle,
-  formPageWrapper,
 } from "../style";
+import { PageContainer, ContentContainer, Card } from '../styles/SharedStyles';
 
 // Constants for retry logic
 const MAX_RETRIES = 3;
@@ -214,8 +213,9 @@ const Login = () => {
   };
 
   return (
-    <div style={formPageWrapper(darkMode)}>
-      <div style={loginContainerStyle(darkMode)}>
+    <PageContainer darkMode={darkMode}>
+      <ContentContainer>
+        <Card darkMode={darkMode}>
         <h2 style={{ color: darkMode ? '#fff' : '#333', marginBottom: '1.5rem' }}>Login</h2>
         
         <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
@@ -338,8 +338,9 @@ const Login = () => {
             </Link>
           </div>
         </div>
-      </div>
-    </div>
+        </Card>
+      </ContentContainer>
+    </PageContainer>
   );
 };
 
