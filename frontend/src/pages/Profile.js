@@ -5,10 +5,10 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { useTheme } from "../ThemeContext";
-import { QRCodeSVG } from "qrcode.react";
 import { toast } from "react-toastify";
 import { useAuth } from '../AuthContext';
 import styled from 'styled-components';
+import { styles } from "../style";
 
 const PageContainer = styled.div`
     min-height: 100vh;
@@ -69,8 +69,8 @@ const Button = styled.button`
     border: none;
     font-weight: 500;
     cursor: pointer;
-    background-color: ${props => props.variant === 'primary' ? '#007bff' : 
-                                props.variant === 'danger' ? '#dc3545' : '#6c757d'};
+    background-color: ${props => props.$variant === 'primary' ? '#007bff' : 
+                                props.$variant === 'danger' ? '#dc3545' : '#6c757d'};
     color: white;
     &:hover {
         opacity: 0.9;
@@ -125,6 +125,7 @@ const QRCodeContainer = styled.div`
 
 const Profile = () => {
     const { darkMode } = useTheme();
+    const currentStyles = styles(darkMode);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -266,6 +267,11 @@ const Profile = () => {
         return `https://secret-cipher-453016-s5.web.app/public-record/${userData.uid}`;
     };
 
+    const generateQRCodeUrl = () => {
+        const data = encodeURIComponent(generateQRCodeData());
+        return `https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=200x200`;
+    };
+
     if (loading) {
         return (
             <PageContainer>
@@ -290,7 +296,7 @@ const Profile = () => {
                             <Username darkMode={darkMode}>{userData?.name || user.email.split('@')[0]}</Username>
                             <Email darkMode={darkMode}>{user.email}</Email>
                         </ProfileInfo>
-                        <Button variant="primary" onClick={() => setIsEditing(true)}>
+                        <Button $variant="primary" onClick={() => setIsEditing(true)}>
                                 Edit Profile
                         </Button>
                     </ProfileHeader>
@@ -424,10 +430,10 @@ const Profile = () => {
                                 gap: '1rem',
                                 marginTop: '1rem'
                             }}>
-                                <Button variant="primary" onClick={handleSave}>
+                                <Button $variant="primary" onClick={handleSave}>
                                     Save Changes
                                 </Button>
-                                <Button variant="danger" onClick={() => setIsEditing(false)}>
+                                <Button $variant="danger" onClick={() => setIsEditing(false)}>
                                     Cancel
                                 </Button>
                             </div>
@@ -468,19 +474,19 @@ const Profile = () => {
                     <QRSection darkMode={darkMode}>
                         <h2>Medical History Access</h2>
                         <QRCodeContainer>
-                            <QRCodeSVG
-                                value={generateQRCodeData()}
-                                size={200}
-                                level="H"
-                                includeMargin={true}
+                            <img 
+                                src={generateQRCodeUrl()} 
+                                alt="Medical QR Code"
+                                width="200"
+                                height="200"
                             />
                         </QRCodeContainer>
                         <p>
                             Scan this QR code to view your complete medical history. 
                             Only authorized healthcare providers can access this information.
                         </p>
-                        <Button variant="danger" onClick={handleLogout}>
-                        Logout
+                        <Button $variant="danger" onClick={handleLogout}>
+                            Logout
                         </Button>
                     </QRSection>
                 </Card>

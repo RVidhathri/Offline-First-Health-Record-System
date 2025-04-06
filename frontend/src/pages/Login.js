@@ -13,7 +13,9 @@ import {
   formPageWrapper,
 } from "../style";
 
-
+// Constants for retry logic
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 seconds
 
 const Login = () => {
   const { darkMode } = useTheme();
@@ -26,6 +28,7 @@ const Login = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
   const [verificationId, setVerificationId] = useState("");
   const [showVerificationInput, setShowVerificationInput] = useState(false);
