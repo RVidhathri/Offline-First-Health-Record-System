@@ -3,12 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#007bff" />
-    <meta
-      name="description"
-      content="Offline Health Records - Store and manage your health records securely"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Offline Health Records - Secure and Private Health Record Management" />
+    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self' https://firestore.googleapis.com; 
+                   img-src 'self' data: https: blob:; 
+                   style-src 'self' 'unsafe-inline' https:; 
+                   script-src 'self' https://firestore.googleapis.com 'unsafe-inline' 'unsafe-eval';
+                   frame-ancestors 'self';" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Offline Health Records</title>

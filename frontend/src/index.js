@@ -1,42 +1,89 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import "./index.css";
 import App from "./App";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./AuthContext";
 import { ThemeProvider } from "./ThemeContext";
-import { firebaseConfig } from "./firebaseConfig";
+import { auth } from "./firebaseConfig"; // Import auth to ensure it's initialized
 
-// Initialize Firebase
-if (!window.firebase.apps.length) {
-  window.firebase.initializeApp(firebaseConfig);
-}
-
-// Create a wrapper component for global styles
-const GlobalStyles = () => {
-  React.useEffect(() => {
-    const style = document.createElement("style");
-    style.innerHTML = `
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
-  }, []);
-
-  return null;
+// Add environment variables to window
+window.process = {
+  env: {
+    NODE_ENV: 'production',
+    PUBLIC_URL: window.location.origin
+  }
 };
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+// Add viewport meta tag with proper accessibility settings
+const existingViewport = document.querySelector('meta[name="viewport"]');
+if (!existingViewport) {
+  const meta = document.createElement('meta');
+  meta.name = 'viewport';
+  meta.content = 'width=device-width, initial-scale=1';
+  document.head.appendChild(meta);
+}
 
+// Error boundary for the entire app
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('App Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          padding: '20px',
+          textAlign: 'center'
+        }}>
+          <h1>Something went wrong.</h1>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              padding: '10px 20px',
+              marginTop: '20px',
+              cursor: 'pointer'
+            }}
+          >
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+// Initialize Firebase and render the app
 root.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <AuthProvider>
-        <GlobalStyles />
-        <App />
-      </AuthProvider>
-    </ThemeProvider>
-  </React.StrictMode>
+  <ErrorBoundary>
+    <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </ErrorBoundary>
 );
 
 

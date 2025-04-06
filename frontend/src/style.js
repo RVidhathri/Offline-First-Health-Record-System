@@ -183,7 +183,7 @@ export const styles = (darkMode) => ({
 
   button: {
     backgroundColor: "#007bff",
-    color: "#ffffff",
+    color: "#fff",
     border: "none",
     padding: "10px 20px",
     fontSize: "1rem",
@@ -221,10 +221,37 @@ export const styles = (darkMode) => ({
     '@media (max-width: 768px)': {
       width: "150px"
     }
+  },
+
+  tableStyle: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: '20px',
+    backgroundColor: darkMode ? '#2d2d2d' : '#ffffff',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    boxShadow: '0 0 20px rgba(0,0,0,0.1)'
+  },
+
+  thStyle: {
+    backgroundColor: darkMode ? '#1e1e1e' : '#007bff',
+    color: '#ffffff',
+    padding: '12px',
+    textAlign: 'left',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    ':hover': {
+      backgroundColor: darkMode ? '#2d2d2d' : '#0056b3'
+    }
+  },
+
+  tdStyle: {
+    padding: '12px',
+    borderBottom: `1px solid ${darkMode ? '#444' : '#ddd'}`,
+    color: darkMode ? '#ffffff' : '#000000'
   }
 });
 
-// Export form styles separately
 export const containerStyle = (darkMode) => ({
   maxWidth: "500px",
   margin: "4rem auto",
@@ -279,7 +306,7 @@ export const inputStyle = (darkMode) => ({
   fontSize: "1rem",
   '@media (max-width: 768px)': {
     padding: "12px",
-    fontSize: "16px" // Prevents zoom on iOS
+    fontSize: "16px"
   }
 });
 
@@ -296,7 +323,7 @@ export const buttonStyle = (darkMode) => ({
   boxShadow: darkMode ? "0 4px 10px rgba(0, 0, 0, 0.3)" : "0 4px 10px rgba(0, 0, 0, 0.1)",
   '@media (max-width: 768px)': {
     padding: "14px",
-    fontSize: "16px" // Prevents zoom on iOS
+    fontSize: "16px"
   },
   ':hover': {
     backgroundColor: "#0056b3"

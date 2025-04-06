@@ -1,6 +1,6 @@
 {
   "short_name": "Health Records",
-  "name": "Offline Health Records",
+  "name": "Offline-First Health Record System",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +18,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#007bff",
+  "theme_color": "#000000",
   "background_color": "#ffffff"
 } 

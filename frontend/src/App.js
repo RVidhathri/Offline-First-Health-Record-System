@@ -1,91 +1,110 @@
-import React, { useEffect, useState } from "react";
-import { auth } from "./firebaseConfig";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { styles as getStyles } from "./style";
+import styled from 'styled-components';
+import { useTheme } from "./ThemeContext";
+import { useFirebaseInit } from './hooks/useFirebaseInit';
 
+// Components
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import Records from "./pages/Records";
-import Register from "./pages/Register";
 import Login from "./pages/Login";
-import ResetPassword from "./pages/ResetPassword"; // Adjust path if necessary
+import Register from "./pages/Register";
+import Records from "./pages/Records";
+import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
+import PublicRecord from "./pages/PublicRecord";
+import PrivateRoute from "./components/PrivateRoute";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+const AppContainer = styled.div`
+    min-height: 100vh;
+    background-image: url('/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+`;
+
+const Overlay = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: ${props => props.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.85)'};
+    backdrop-filter: blur(8px);
+`;
+
+const ContentWrapper = styled.div`
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+`;
+
+const StyledToastContainer = styled(ToastContainer)`
+    .Toastify__toast {
+        background-color: ${props => props.darkMode ? '#333' : '#fff'};
+        color: ${props => props.darkMode ? '#fff' : '#333'};
+    }
+    .Toastify__close-button {
+        color: ${props => props.darkMode ? '#fff' : '#333'};
+    }
+    .Toastify__progress-bar {
+        background-color: ${props => props.darkMode ? '#fff' : '#007bff'};
+    }
+`;
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+    const { darkMode } = useTheme();
+    const initialized = useFirebaseInit();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
+    if (!initialized) {
+        return (
+            <div style={{
+                minHeight: '100vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                background: darkMode ? '#121212' : '#f5f7fa'
+            }}>
+                <div style={{
+                    color: darkMode ? '#fff' : '#333',
+                    fontSize: '1.2rem'
+                }}>Loading...</div>
+            </div>
+        );
+    }
 
-  useEffect(() => {
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
-
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
-  const styles = getStyles(darkMode); // use dark/light mode styles
-
-  return (
-    <div style={styles.app}>
-      <Router>
-      <nav style={styles.nav}>
-      <img src="/logo.png" alt="Logo" style={{ height: "40px" }} />
-
-  <ul style={styles.ul}>
-    <li style={styles.li}><Link to="/" style={styles.link}>Home</Link></li>
-    <li style={styles.li}><Link to="/register" style={styles.link}>Register</Link></li>
-    <li style={styles.li}><Link to="/login" style={styles.link}>Login</Link></li>
-    <li style={styles.li}><Link to="/records" style={styles.link}>Records</Link></li>
-    {currentUser && (
-      <>
-        <li style={styles.li}><Link to="/profile" style={styles.link}>Profile</Link></li>
-        <li style={styles.li}>
-          <button onClick={handleLogout} style={styles.logoutButton}>Logout</button>
-        </li>
-      </>
-    )}
-    <li style={styles.li}>
-      <button onClick={() => setDarkMode(!darkMode)} style={styles.toggleButton}>
-        {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-      </button>
-    </li>
-  </ul>
-</nav>
-
-
-        <Routes>
-        <Route path="/" element={<Home darkMode={darkMode} />} />
-
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          <Route path="/records" element={
-            <ProtectedRoute>
-              <Records />
-            </ProtectedRoute>
-          } />
-        </Routes>
-        <ToastContainer position="top-right" autoClose={3000} />
-      </Router>
-    </div>
-  );
+    return (
+        <AppContainer>
+            <Overlay darkMode={darkMode} />
+            <ContentWrapper>
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                    <Route path="/records" element={<PrivateRoute><Records /></PrivateRoute>} />
+                    <Route path="/public-record/:id" element={<PublicRecord />} />
+                </Routes>
+                <StyledToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme={darkMode ? 'dark' : 'light'}
+                />
+            </ContentWrapper>
+        </AppContainer>
+    );
 }
 
 export default App;
