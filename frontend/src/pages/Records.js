@@ -4,7 +4,6 @@ import { useTheme } from "../ThemeContext";
 import { auth, db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { QRCodeSVG } from "qrcode.react";
 import {
     containerStyle,
     titleStyle,
@@ -29,13 +28,12 @@ const Records = () => {
     });
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchColumn, setSearchColumn] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [dateRange, setDateRange] = useState({ start: "", end: "" });
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [showQRCode, setShowQRCode] = useState(false);
-    const [qrData, setQRData] = useState(null);
     const recordsPerPage = 10;
 
     // Load records from localStorage first
@@ -187,40 +185,16 @@ const Records = () => {
         linkElement.click();
     };
 
-    const generateQRCode = () => {
-        try {
-            // Create a data object with user's records
-            const userData = {
-                userId: auth.currentUser?.uid,
-                records: records.map(record => ({
-                    age: record.age,
-                    date: record.date,
-                    disease: record.disease,
-                    hospital: record.hospital,
-                    doctor: record.doctor,
-                    file: record.file
-                }))
-            };
-
-            // Convert to JSON string
-            const dataString = JSON.stringify(userData);
-            setQRData(dataString);
-            setShowQRCode(true);
-        } catch (error) {
-            console.error("Error generating QR code:", error);
-            toast.error("Failed to generate QR code");
-        }
-    };
-
     const filteredRecords = sortedRecords.filter(record => {
-        const matchesSearch = Object.values(record).some(value => 
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        
-        const matchesDateRange = (!dateRange.start || record.date >= dateRange.start) && 
-                               (!dateRange.end || record.date <= dateRange.end);
-        
-        return matchesSearch && matchesDateRange;
+        if (searchColumn === "all") {
+            // Search across all columns
+            return Object.values(record).some(value => 
+                value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        } else {
+            // Search in specific column
+            return record[searchColumn]?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+        }
     });
 
     // Pagination
@@ -255,106 +229,40 @@ const Records = () => {
         backgroundColor: darkMode ? '#3d3d3d' : '#f9f9f9',
     };
 
-    const RecordModal = ({ record, onClose }) => (
-        <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000
-        }}>
-            <div style={{
-                backgroundColor: darkMode ? '#2d2d2d' : '#ffffff',
-                padding: '2rem',
-                borderRadius: '10px',
-                maxWidth: '600px',
-                width: '90%',
-                maxHeight: '90vh',
-                overflowY: 'auto'
-            }}>
-                <h3 style={{ color: darkMode ? '#fff' : '#000', marginBottom: '1rem' }}>Record Details</h3>
-                <div style={{ marginBottom: '1rem' }}>
-                    <p><strong>Date:</strong> {record.date}</p>
-                    <p><strong>Age:</strong> {record.age}</p>
-                    <p><strong>Disease:</strong> {record.disease}</p>
-                    <p><strong>Hospital:</strong> {record.hospital}</p>
-                    <p><strong>Doctor:</strong> {record.doctor}</p>
-                    <p><strong>File:</strong> {record.file || "None"}</p>
-                </div>
-                <button 
-                    onClick={onClose}
-                    style={{
-                        ...buttonStyle(darkMode),
-                        backgroundColor: '#6c757d',
-                        marginTop: '1rem'
-                    }}
-                >
-                    Close
-                </button>
-            </div>
-        </div>
-    );
-
     return (
-        <div style={containerStyle(darkMode)}>
-            <h2 style={titleStyle(darkMode)}>Health Records</h2>
-            
-            {loading && (
-                <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                    <p style={{ color: darkMode ? '#fff' : '#000' }}>Loading records...</p>
-                </div>
-            )}
-
-            {/* Summary Section */}
-            <div style={{
-                backgroundColor: darkMode ? '#2d2d2d' : '#ffffff',
-                padding: '1rem',
-                borderRadius: '10px',
-                marginBottom: '1rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '1rem'
-            }}>
-                <div>
-                    <h3 style={{ color: darkMode ? '#fff' : '#000', margin: 0 }}>Total Records: {records.length}</h3>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button 
-                        onClick={handleExport}
-                        style={{
-                            ...buttonStyle(darkMode),
-                            backgroundColor: '#28a745'
-                        }}
-                    >
-                        Export Records
-                    </button>
-                    <button 
-                        onClick={generateQRCode}
-                        style={{
-                            ...buttonStyle(darkMode),
-                            backgroundColor: '#17a2b8'
-                        }}
-                    >
-                        Generate QR Code
-                    </button>
-                </div>
+        <div style={{
+            ...containerStyle(darkMode),
+            backgroundImage: 'url("/background.jpg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
+            minHeight: '100vh',
+            padding: '2rem'
+        }}>
+            <div style={titleStyle(darkMode)}>Health Records</div>
+            <div style={descriptionStyle(darkMode)}>
+                Manage your health records securely, both online and offline.
             </div>
 
-            {/* Search and Filter Section */}
-            <div style={{
-                backgroundColor: darkMode ? '#2d2d2d' : '#ffffff',
-                padding: '1rem',
-                borderRadius: '10px',
-                marginBottom: '1rem'
-            }}>
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+            {/* Search Section */}
+            <div style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+                    <select
+                        value={searchColumn}
+                        onChange={(e) => setSearchColumn(e.target.value)}
+                        style={{
+                            ...inputStyle(darkMode),
+                            width: '150px',
+                            padding: '8px'
+                        }}
+                    >
+                        <option value="all">All Columns</option>
+                        <option value="age">Age</option>
+                        <option value="date">Date</option>
+                        <option value="disease">Disease</option>
+                        <option value="hospital">Hospital</option>
+                        <option value="doctor">Doctor</option>
+                    </select>
                     <input
                         type="text"
                         placeholder="Search records..."
@@ -362,25 +270,22 @@ const Records = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
                             ...inputStyle(darkMode),
-                            flex: '1',
-                            minWidth: '200px'
+                            flex: 1,
+                            padding: '8px'
                         }}
                     />
-                    <input
-                        type="date"
-                        value={dateRange.start}
-                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-                        style={inputStyle(darkMode)}
-                        placeholder="Start Date"
-                    />
-                    <input
-                        type="date"
-                        value={dateRange.end}
-                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-                        style={inputStyle(darkMode)}
-                        placeholder="End Date"
-                    />
                 </div>
+                {searchTerm && (
+                    <div style={{
+                        color: darkMode ? '#fff' : '#000',
+                        marginTop: '10px',
+                        padding: '10px',
+                        backgroundColor: darkMode ? '#2d2d2d' : '#f5f5f5',
+                        borderRadius: '5px'
+                    }}>
+                        Found {filteredRecords.length} matching records
+                    </div>
+                )}
             </div>
 
             {/* Form Section */}
@@ -551,6 +456,34 @@ const Records = () => {
                 </form>
             </div>
 
+            {/* Summary Section */}
+            <div style={{
+                backgroundColor: darkMode ? '#2d2d2d' : '#ffffff',
+                padding: '1rem',
+                borderRadius: '10px',
+                marginBottom: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '1rem'
+            }}>
+                <div>
+                    <h3 style={{ color: darkMode ? '#fff' : '#000', margin: 0 }}>Total Records: {records.length}</h3>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button 
+                        onClick={handleExport}
+                        style={{
+                            ...buttonStyle(darkMode),
+                            backgroundColor: '#28a745'
+                        }}
+                    >
+                        Export Records
+                    </button>
+                </div>
+            </div>
+
             {/* Records Table */}
             <div style={{ overflowX: 'auto' }}>
                 <table style={tableStyle}>
@@ -576,51 +509,53 @@ const Records = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {records.length > 0 ? (
-                            currentRecords.map((record, index) => (
-                                <tr key={record.id || index} style={trHoverStyle}>
-                                    <td style={tdStyle}>{record.date}</td>
-                                    <td style={tdStyle}>{record.age}</td>
-                                    <td style={tdStyle}>{record.disease}</td>
-                                    <td style={tdStyle}>{record.hospital}</td>
-                                    <td style={tdStyle}>{record.doctor}</td>
-                                    <td style={tdStyle}>{record.file || "None"}</td>
-                                    <td style={tdStyle}>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <button 
-                                                onClick={() => {
-                                                    setSelectedRecord(record);
-                                                    setShowModal(true);
-                                                }}
-                                                style={{
-                                                    ...buttonStyle(darkMode),
-                                                    padding: '5px 10px',
-                                                    backgroundColor: '#17a2b8'
-                                                }}
-                                            >
-                                                View
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(index, record.id)}
-                                                style={{
-                                                    ...buttonStyle(darkMode),
-                                                    padding: '5px 10px',
-                                                    backgroundColor: '#dc3545'
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
-                                    No records found
+                        {currentRecords.map((record, index) => (
+                            <tr 
+                                key={record.id || index}
+                                style={{
+                                    ...tdStyle,
+                                    backgroundColor: searchTerm && 
+                                        (searchColumn === 'all' || 
+                                        record[searchColumn]?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+                                        ? (darkMode ? '#3d3d3d' : '#f0f0f0')
+                                        : 'transparent'
+                                }}
+                            >
+                                <td style={tdStyle}>{record.date}</td>
+                                <td style={tdStyle}>{record.age}</td>
+                                <td style={tdStyle}>{record.disease}</td>
+                                <td style={tdStyle}>{record.hospital}</td>
+                                <td style={tdStyle}>{record.doctor}</td>
+                                <td style={tdStyle}>{record.file || "None"}</td>
+                                <td style={tdStyle}>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <button 
+                                            onClick={() => {
+                                                setSelectedRecord(record);
+                                                setShowModal(true);
+                                            }}
+                                            style={{
+                                                ...buttonStyle(darkMode),
+                                                padding: '5px 10px',
+                                                backgroundColor: '#17a2b8'
+                                            }}
+                                        >
+                                            View
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(index, record.id)}
+                                            style={{
+                                                ...buttonStyle(darkMode),
+                                                padding: '5px 10px',
+                                                backgroundColor: '#dc3545'
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
-                        )}
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -648,19 +583,8 @@ const Records = () => {
                 </div>
             )}
 
-            {/* Record Details Modal */}
+            {/* View Record Modal */}
             {showModal && selectedRecord && (
-                <RecordModal 
-                    record={selectedRecord} 
-                    onClose={() => {
-                        setShowModal(false);
-                        setSelectedRecord(null);
-                    }} 
-                />
-            )}
-
-            {/* QR Code Modal */}
-            {showQRCode && (
                 <div style={{
                     position: 'fixed',
                     top: 0,
@@ -677,37 +601,53 @@ const Records = () => {
                         backgroundColor: darkMode ? '#2d2d2d' : '#ffffff',
                         padding: '2rem',
                         borderRadius: '10px',
-                        textAlign: 'center'
+                        maxWidth: '500px',
+                        width: '90%',
+                        boxShadow: '0 0 20px rgba(0,0,0,0.2)'
                     }}>
-                        <h3 style={{ color: darkMode ? '#fff' : '#000', marginBottom: '1rem' }}>
-                            Scan this QR code to access your records
-                        </h3>
-                        <div style={{ 
-                            padding: '1rem',
-                            backgroundColor: '#fff',
-                            borderRadius: '8px',
-                            display: 'inline-block',
-                            marginBottom: '1rem'
-                        }}>
-                            <QRCodeSVG 
-                                value={qrData}
-                                size={256}
-                                level="H"
-                                includeMargin={true}
-                            />
-                        </div>
-                        <p style={{ 
+                        <h3 style={{
                             color: darkMode ? '#fff' : '#000',
-                            marginBottom: '1rem',
-                            fontSize: '0.9rem'
+                            marginBottom: '1.5rem',
+                            fontSize: '1.5rem'
                         }}>
-                            This QR code contains all your health records. Keep it secure.
-                        </p>
-                        <button 
-                            onClick={() => setShowQRCode(false)}
+                            Record Details
+                        </h3>
+                        <div style={{
+                            display: 'grid',
+                            gap: '1rem',
+                            marginBottom: '1.5rem'
+                        }}>
+                            <div>
+                                <strong style={{ color: darkMode ? '#ddd' : '#666' }}>Date:</strong>
+                                <p style={{ color: darkMode ? '#fff' : '#000' }}>{selectedRecord.date}</p>
+                            </div>
+                            <div>
+                                <strong style={{ color: darkMode ? '#ddd' : '#666' }}>Age:</strong>
+                                <p style={{ color: darkMode ? '#fff' : '#000' }}>{selectedRecord.age}</p>
+                            </div>
+                            <div>
+                                <strong style={{ color: darkMode ? '#ddd' : '#666' }}>Disease:</strong>
+                                <p style={{ color: darkMode ? '#fff' : '#000' }}>{selectedRecord.disease}</p>
+                            </div>
+                            <div>
+                                <strong style={{ color: darkMode ? '#ddd' : '#666' }}>Hospital:</strong>
+                                <p style={{ color: darkMode ? '#fff' : '#000' }}>{selectedRecord.hospital}</p>
+                            </div>
+                            <div>
+                                <strong style={{ color: darkMode ? '#ddd' : '#666' }}>Doctor:</strong>
+                                <p style={{ color: darkMode ? '#fff' : '#000' }}>{selectedRecord.doctor}</p>
+                            </div>
+                            <div>
+                                <strong style={{ color: darkMode ? '#ddd' : '#666' }}>File:</strong>
+                                <p style={{ color: darkMode ? '#fff' : '#000' }}>{selectedRecord.file || "None"}</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setShowModal(false)}
                             style={{
                                 ...buttonStyle(darkMode),
-                                backgroundColor: '#6c757d'
+                                backgroundColor: '#6c757d',
+                                width: '100%'
                             }}
                         >
                             Close

@@ -3,6 +3,8 @@ import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useTheme } from "../ThemeContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   containerStyle,
   titleStyle,
@@ -14,6 +16,7 @@ import {
 
 const Register = () => {
   const { darkMode } = useTheme();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,10 +56,11 @@ const Register = () => {
         qrCode: qrCodeUrl,
       });
 
-      alert("User registered successfully");
+      toast.success("Registration successful! Please login.");
+      navigate("/login");
     } catch (error) {
       console.error("Registration Error:", error);
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 

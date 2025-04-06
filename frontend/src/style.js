@@ -10,6 +10,11 @@ export const styles = (darkMode) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    '@media (max-width: 768px)': {
+      height: "auto",
+      minHeight: "100vh",
+      padding: "2rem 0"
+    }
   },
 
   overlay: {
@@ -19,17 +24,28 @@ export const styles = (darkMode) => ({
     textAlign: "center",
     color: "#fff",
     maxWidth: "700px",
+    '@media (max-width: 768px)': {
+      padding: "1.5rem",
+      margin: "1rem",
+      width: "90%"
+    }
   },
 
   heroHeading: {
     fontSize: "3rem",
     fontWeight: "bold",
     marginBottom: "1rem",
+    '@media (max-width: 768px)': {
+      fontSize: "2rem"
+    }
   },
 
   heroSubText: {
     fontSize: "1.2rem",
     marginBottom: "2rem",
+    '@media (max-width: 768px)': {
+      fontSize: "1rem"
+    }
   },
 
   app: {
@@ -45,12 +61,20 @@ export const styles = (darkMode) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    '@media (max-width: 768px)': {
+      padding: "1rem",
+      flexDirection: "column",
+      gap: "1rem"
+    }
   },
 
   navLeft: {
     fontSize: "1.5rem",
     fontWeight: "bold",
     color: "#fff",
+    '@media (max-width: 768px)': {
+      fontSize: "1.2rem"
+    }
   },
 
   ul: {
@@ -60,16 +84,30 @@ export const styles = (darkMode) => ({
     margin: 0,
     padding: 0,
     alignItems: "center",
+    '@media (max-width: 768px)': {
+      flexDirection: "column",
+      width: "100%",
+      gap: "0.5rem"
+    }
   },
 
   li: {
     display: "inline",
+    '@media (max-width: 768px)': {
+      width: "100%"
+    }
   },
 
   link: {
     color: "#ffffff",
     textDecoration: "none",
     fontWeight: "bold",
+    '@media (max-width: 768px)': {
+      display: "block",
+      padding: "0.75rem",
+      textAlign: "center",
+      width: "100%"
+    }
   },
 
   logoutButton: {
@@ -78,6 +116,11 @@ export const styles = (darkMode) => ({
     color: "white",
     cursor: "pointer",
     fontWeight: "bold",
+    '@media (max-width: 768px)': {
+      width: "100%",
+      padding: "0.75rem",
+      textAlign: "center"
+    }
   },
 
   toggleButton: {
@@ -87,6 +130,10 @@ export const styles = (darkMode) => ({
     padding: "5px 10px",
     cursor: "pointer",
     borderRadius: "5px",
+    '@media (max-width: 768px)': {
+      width: "100%",
+      padding: "0.75rem"
+    }
   },
 
   homeBackground: {
@@ -98,6 +145,10 @@ export const styles = (darkMode) => ({
     justifyContent: "center",
     alignItems: "center",
     padding: "2rem",
+    '@media (max-width: 768px)': {
+      padding: "1rem",
+      minHeight: "calc(100vh - 60px)"
+    }
   },
 
   heading: {
@@ -105,12 +156,18 @@ export const styles = (darkMode) => ({
     fontWeight: "bold",
     margin: "1rem 0",
     color: darkMode ? "#ffffff" : "#000000",
+    '@media (max-width: 768px)': {
+      fontSize: "1.8rem"
+    }
   },
 
   subText: {
     fontSize: "18px",
     color: darkMode ? "#ddd" : "#333",
     marginBottom: "20px",
+    '@media (max-width: 768px)': {
+      fontSize: "16px"
+    }
   },
 
   buttonGroup: {
@@ -118,6 +175,10 @@ export const styles = (darkMode) => ({
     gap: "1rem",
     marginTop: "1rem",
     justifyContent: "center",
+    '@media (max-width: 768px)': {
+      flexDirection: "column",
+      width: "100%"
+    }
   },
 
   button: {
@@ -128,6 +189,14 @@ export const styles = (darkMode) => ({
     fontSize: "1rem",
     borderRadius: "8px",
     cursor: "pointer",
+    transition: "background-color 0.3s",
+    '@media (max-width: 768px)': {
+      width: "100%",
+      padding: "12px"
+    },
+    ':hover': {
+      backgroundColor: "#0056b3"
+    }
   },
 
   pageWrapper: {
@@ -141,15 +210,21 @@ export const styles = (darkMode) => ({
     minHeight: "100vh",
     transition: "all 0.3s ease",
     textAlign: "center",
+    '@media (max-width: 768px)': {
+      padding: "1rem"
+    }
   },
 
   logo: {
     width: "200px",
     marginBottom: "1rem",
-  },
+    '@media (max-width: 768px)': {
+      width: "150px"
+    }
+  }
 });
 
-// Export form styles separately (not inside the `styles` function)
+// Export form styles separately
 export const containerStyle = (darkMode) => ({
   maxWidth: "500px",
   margin: "4rem auto",
@@ -158,28 +233,41 @@ export const containerStyle = (darkMode) => ({
   color: darkMode ? "white" : "black",
   borderRadius: "15px",
   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-  fontFamily: "Arial, sans-serif"
+  fontFamily: "Arial, sans-serif",
+  '@media (max-width: 768px)': {
+    margin: "2rem auto",
+    padding: "1.5rem",
+    width: "90%"
+  }
 });
-
 
 export const titleStyle = (darkMode) => ({
   textAlign: "center",
   fontSize: "1.8rem",
   fontWeight: "bold",
   marginBottom: "1rem",
-  color: darkMode ? "#ffffff" : "#000000" // ✨ optional
+  color: darkMode ? "#ffffff" : "#000000",
+  '@media (max-width: 768px)': {
+    fontSize: "1.5rem"
+  }
 });
 
 export const descriptionStyle = (darkMode) => ({
   fontSize: "14px",
   marginBottom: "20px",
   color: darkMode ? "#ccc" : "#333",
+  '@media (max-width: 768px)': {
+    fontSize: "13px"
+  }
 });
 
 export const labelStyle = (darkMode) => ({
   fontWeight: "bold",
   marginBottom: "0.3rem",
-  display: "block"
+  display: "block",
+  '@media (max-width: 768px)': {
+    fontSize: "0.9rem"
+  }
 });
 
 export const inputStyle = (darkMode) => ({
@@ -188,7 +276,11 @@ export const inputStyle = (darkMode) => ({
   marginBottom: "1rem",
   borderRadius: "8px",
   border: "1px solid #ccc",
-  fontSize: "1rem"
+  fontSize: "1rem",
+  '@media (max-width: 768px)': {
+    padding: "12px",
+    fontSize: "16px" // Prevents zoom on iOS
+  }
 });
 
 export const buttonStyle = (darkMode) => ({
@@ -202,46 +294,68 @@ export const buttonStyle = (darkMode) => ({
   cursor: "pointer",
   transition: "background-color 0.3s ease",
   boxShadow: darkMode ? "0 4px 10px rgba(0, 0, 0, 0.3)" : "0 4px 10px rgba(0, 0, 0, 0.1)",
+  '@media (max-width: 768px)': {
+    padding: "14px",
+    fontSize: "16px" // Prevents zoom on iOS
+  },
+  ':hover': {
+    backgroundColor: "#0056b3"
+  }
 });
 
-  export const loginContainerStyle = (darkMode) => ({
-    backgroundColor: "#add8e6", // light blue
-    padding: "2rem",
-    borderRadius: "12px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "500px",
-    margin: "2rem auto",
-  });
- 
-  export const formPageWrapper = (darkMode) => ({
-    backgroundImage: 'url("/background.jpeg")',
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "2rem",
-    backgroundColor: darkMode ? "#121212" : "#ffffff",
-  });
-  export const fadeIn = {
-    animation: "fadeIn 0.8s ease-in-out",
-  };
-  
-  export const globalAnimations = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-  export const overlayCard = (darkMode) => ({
-    backgroundColor: darkMode ? "rgba(0, 0, 0, 0.6)" : "rgba(255, 255, 255, 0.8)",
-    padding: "2rem",
-    borderRadius: "15px",
-    backdropFilter: "blur(5px)",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
-  });
-  
+export const loginContainerStyle = (darkMode) => ({
+  backgroundColor: "#add8e6",
+  padding: "2rem",
+  borderRadius: "12px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  maxWidth: "500px",
+  margin: "2rem auto",
+  '@media (max-width: 768px)': {
+    padding: "1.5rem",
+    margin: "1rem auto",
+    width: "90%"
+  }
+});
+
+export const formPageWrapper = (darkMode) => ({
+  backgroundImage: 'url("/background.jpeg")',
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  minHeight: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "2rem",
+  backgroundColor: darkMode ? "#121212" : "#ffffff",
+  '@media (max-width: 768px)': {
+    padding: "1rem"
+  }
+});
+
+export const fadeIn = {
+  animation: "fadeIn 0.8s ease-in-out",
+};
+
+export const globalAnimations = `
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;
+
+export const overlayCard = (darkMode) => ({
+  backgroundColor: darkMode ? "rgba(0, 0, 0, 0.6)" : "rgba(255, 255, 255, 0.8)",
+  padding: "2rem",
+  borderRadius: "15px",
+  backdropFilter: "blur(5px)",
+  boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+  '@media (max-width: 768px)': {
+    padding: "1.5rem",
+    width: "90%",
+    margin: "1rem auto"
+  }
+});
+
   
   
   
